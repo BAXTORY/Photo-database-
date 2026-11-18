@@ -3,14 +3,15 @@ import os
 import uuid
 import hmac
 from functools import wraps
+from io import BytesIO
 
+import requests
 from flask import (
     Flask, request, redirect, url_for,
     session, render_template_string, flash,
     send_file, abort
 )
 from supabase import create_client
-from io import BytesIO
 
 app = Flask(__name__)
 
@@ -195,6 +196,7 @@ def get_photo(name):
         )
         return result.get("signedURL") or result.get("signedUrl")
     except Exception:
+        app.logger.exception("Could not create photo URL")
         return None
 
 
@@ -251,7 +253,7 @@ def gallery():
 
         photos.reverse()
 
-                return render_template_string(
+        return render_template_string(
             PAGE,
             logged_in=True,
             photos=photos,
@@ -302,6 +304,7 @@ def upload():
             uploaded += 1
 
         except Exception:
+            app.logger.exception("Photo upload failed")
             continue
 
     if uploaded:
@@ -324,6 +327,7 @@ def delete():
         supabase.storage.from_(BUCKET).remove([name])
         flash("Photo deleted successfully.")
     except Exception:
+        app.logger.exception("Photo deletion failed")
         flash("Could not delete photo.")
 
     return redirect(url_for("gallery"))
@@ -336,8 +340,6 @@ def download(name):
 
     if not url:
         abort(404)
-
-    import requests
 
     response = requests.get(url, timeout=30)
 
@@ -366,4 +368,3 @@ def too_large(error):
 
 if __name__ == "__main__":
     app.run(debug=False)
-      
