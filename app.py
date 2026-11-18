@@ -251,14 +251,14 @@ def gallery():
 
         photos.reverse()
 
-        return render_template_string(
+                return render_template_string(
             PAGE,
             logged_in=True,
             photos=photos,
             messages=[]
         )
 
-        except Exception as e:
+    except Exception as e:
         app.logger.exception("Gallery loading failed")
         return f"Gallery error: {type(e).__name__}", 500
 
