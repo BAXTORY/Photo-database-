@@ -258,8 +258,9 @@ def gallery():
             messages=[]
         )
 
-    except Exception:
-        return "Could not load gallery. Check storage configuration.", 500
+        except Exception as e:
+        app.logger.exception("Gallery loading failed")
+        return f"Gallery error: {type(e).__name__}", 500
 
 
 @app.route("/upload", methods=["POST"])
