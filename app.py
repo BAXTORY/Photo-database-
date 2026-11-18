@@ -126,10 +126,11 @@ a {color:#93c5fd;text-decoration:none}
 <p class="muted">Maximum 10 MB per photo.</p>
 </div>
 
-{% for message in messages %}
-<p class="message">{{ message }}</p>
-{% endfor %}
-
+{% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+        <p class="message">{{ message }}</p>
+    {% endfor %}
+{% endwith %}
 <h2>My Gallery</h2>
 
 <div class="grid">
