@@ -1088,4 +1088,4 @@ def delete():
 
     if (
         not name
-        or "/" in na
+        or "/" in na)
